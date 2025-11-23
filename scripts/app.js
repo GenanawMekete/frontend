@@ -44,7 +44,7 @@ class BingoApp {
             window.location.hostname === '127.0.0.1') {
             return 'ws://localhost:3000';
         }
-        return 'wss://your-bingo-server.com';
+        return 'wss://https://frontend-c3q6.onrender.com';
     }
 
     async connectToServer() {
