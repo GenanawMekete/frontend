@@ -1,17 +1,13 @@
 {
-  "url": "https://frontend.onrender.com",
-  "name": "Geez Bingo",
-  "iconUrl": "https://frontend.onrender.com/assets/icons/bingo.png",
-  "description": "Fast-paced multiplayer bingo game with 30-second rounds",
-  "shortName": "Bingo",
-  "version": "1.0.0",
-  "platform": "telegram",
-  "features": {
-    "multiplayer": true,
-    "payments": true,
-    "notifications": true
-  },
-  "permissions": [
-    "telegram_web_app"
-  ]
+    "url": "https://frontend-c3q6.onrender.com",
+    "name": "Bingo Royale",
+    "iconUrl": "https://frontend-c3q6.onrender.com/assets/icons/bingo.svg",
+    "description": "Multiplayer Bingo Game with 30-second rounds",
+    "short_name": "Bingo Royale",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "theme_color": "#0088cc",
+    "background_color": "#ffffff",
+    "scope": "/frontend/",
+    "start_url": "/frontend/index.html"
 }
