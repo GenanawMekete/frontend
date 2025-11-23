@@ -1,30 +1,104 @@
-{
-  "name": "bingo-backend",
-  "version": "1.0.0",
-  "description": "Multiplayer Bingo Game Backend with Telegram Mini App",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "test": "jest",
-    "migrate": "node database/migrate.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.7.2",
-    "cors": "^2.8.5",
-    "helmet": "^7.0.0",
-    "dotenv": "^16.3.1",
-    "uuid": "^9.0.0",
-    "node-cron": "^3.0.2",
-    "axios": "^1.5.0",
-    "winston": "^3.10.0",
-    "express-rate-limit": "^6.8.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+/* Lobby Styles */
+.lobby-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl) 0;
+}
+
+.stats-cards {
+    display: flex;
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 300px;
+}
+
+.stat-card {
+    flex: 1;
+    background: var(--tg-theme-secondary-bg-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+}
+
+.stat-card img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-card span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-card p {
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+}
+
+.next-game-timer {
+    text-align: center;
+}
+
+.next-game-timer p {
+    margin-bottom: var(--spacing-sm);
+    color: var(--secondary-color);
+}
+
+/* Game Info */
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--tg-theme-secondary-bg-color);
+    border-radius: var(--border-radius);
+}
+
+.game-timer, .current-number {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.timer {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.number-display {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--success-color);
+    min-width: 60px;
+    text-align: center;
+}
+
+/* Results Screen */
+.results-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl) 0;
+    text-align: center;
+}
+
+#result-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.winner-info {
+    background: var(--tg-theme-secondary-bg-color);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    margin: var(--spacing-md) 0;
 }
