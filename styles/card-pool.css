@@ -1,341 +1,111 @@
-class CardPoolManager {
-    constructor() {
-        this.availableCards = [];
-        this.selectedCards = new Set();
-        this.maxCards = 6;
-        this.currentBet = 10;
-        this.init();
-    }
-
-    init() {
-        this.generateCardPool();
-        this.setupEventListeners();
-        this.updateDisplay();
-    }
-
-    generateCardPool() {
-        // Generate 12 available cards
-        this.availableCards = Array.from({ length: 12 }, (_, index) => 
-            this.generateBingoCard(index + 1)
-        );
-    }
-
-    generateBingoCard(cardNumber) {
-        const card = {
-            id: `card_${cardNumber}`,
-            number: cardNumber,
-            price: 0, // Free for demo, could be 1 coin per card
-            cells: [],
-            isSelected: false
-        };
-
-        // Generate numbers for each column B-I-N-G-O
-        for (let col = 0; col < 5; col++) {
-            const columnNumbers = this.generateColumnNumbers(col);
-            card.cells.push(columnNumbers);
-        }
-
-        return card;
-    }
-
-    generateColumnNumbers(columnIndex) {
-        const numbers = new Set();
-        const min = columnIndex * 15 + 1;
-        const max = min + 14;
-
-        while (numbers.size < 5) {
-            const num = Math.floor(Math.random() * (max - min + 1)) + min;
-            numbers.add(num);
-        }
-
-        return Array.from(numbers).sort((a, b) => a - b);
-    }
-
-    setupEventListeners() {
-        // Card selection
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.bingo-card-selector')) {
-                const cardElement = e.target.closest('.bingo-card-selector');
-                const cardId = cardElement.dataset.cardId;
-                this.toggleCardSelection(cardId);
-            }
-        });
-
-        // Select All / Clear buttons
-        document.getElementById('selectAllCards').addEventListener('click', () => {
-            this.selectAllCards();
-        });
-
-        document.getElementById('clearSelection').addEventListener('click', () => {
-            this.clearSelection();
-        });
-
-        // Bet selection
-        document.querySelectorAll('.bet-option').forEach(button => {
-            button.addEventListener('click', (e) => {
-                this.setBetAmount(parseInt(e.target.dataset.bet));
-            });
-        });
-
-        // Card navigation in active game
-        document.getElementById('prevCard').addEventListener('click', () => {
-            this.navigateCards(-1);
-        });
-
-        document.getElementById('nextCard').addEventListener('click', () => {
-            this.navigateCards(1);
-        });
-    }
-
-    toggleCardSelection(cardId) {
-        if (this.selectedCards.has(cardId)) {
-            this.selectedCards.delete(cardId);
-        } else {
-            if (this.selectedCards.size < this.maxCards) {
-                this.selectedCards.add(cardId);
-            } else {
-                window.telegramApp.showAlert(`Maximum ${this.maxCards} cards allowed per game`);
-                return;
-            }
-        }
-
-        this.updateDisplay();
-        this.updateJoinButton();
-    }
-
-    selectAllCards() {
-        const cardsToSelect = this.availableCards.slice(0, this.maxCards);
-        this.selectedCards.clear();
-        cardsToSelect.forEach(card => {
-            this.selectedCards.add(card.id);
-        });
-        this.updateDisplay();
-        this.updateJoinButton();
-    }
-
-    clearSelection() {
-        this.selectedCards.clear();
-        this.updateDisplay();
-        this.updateJoinButton();
-    }
-
-    setBetAmount(amount) {
-        this.currentBet = amount;
-        
-        // Update UI
-        document.querySelectorAll('.bet-option').forEach(button => {
-            button.classList.remove('active');
-        });
-        document.querySelector(`[data-bet="${amount}"]`).classList.add('active');
-        
-        document.getElementById('currentBet').textContent = amount;
-    }
-
-    updateDisplay() {
-        this.renderCardPool();
-        this.updateSelectionCount();
-        this.updateTotalCost();
-    }
-
-    renderCardPool() {
-        const poolContainer = document.getElementById('cardPool');
-        poolContainer.innerHTML = '';
-
-        this.availableCards.forEach(card => {
-            const isSelected = this.selectedCards.has(card.id);
-            const cardElement = this.createCardElement(card, isSelected);
-            poolContainer.appendChild(cardElement);
-        });
-    }
-
-    createCardElement(card, isSelected) {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = `bingo-card-selector ${isSelected ? 'selected' : ''}`;
-        cardDiv.dataset.cardId = card.id;
-
-        // Create card header
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'card-header';
-        headerDiv.innerHTML = `
-            <span class="card-number">#${card.number}</span>
-            ${card.price > 0 ? `<span class="card-price">${card.price} coin</span>` : '<span class="card-price">FREE</span>'}
-        `;
-
-        // Create mini bingo grid
-        const gridDiv = document.createElement('div');
-        gridDiv.className = 'card-grid-mini';
-
-        for (let row = 0; row < 5; row++) {
-            for (let col = 0; col < 5; col++) {
-                const cell = document.createElement('div');
-                cell.className = 'card-cell-mini';
-                
-                if (row === 2 && col === 2) {
-                    cell.textContent = 'FREE';
-                    cell.classList.add('free');
-                } else {
-                    cell.textContent = card.cells[col][row];
-                }
-                
-                gridDiv.appendChild(cell);
-            }
-        }
-
-        cardDiv.appendChild(headerDiv);
-        cardDiv.appendChild(gridDiv);
-
-        return cardDiv;
-    }
-
-    updateSelectionCount() {
-        document.getElementById('selectedCount').textContent = this.selectedCards.size;
-        document.getElementById('maxCards').textContent = this.maxCards;
-    }
-
-    updateTotalCost() {
-        const totalCost = Array.from(this.selectedCards).reduce((total, cardId) => {
-            const card = this.availableCards.find(c => c.id === cardId);
-            return total + (card ? card.price : 0);
-        }, 0);
-
-        // Update UI if you have a total cost display
-        const costElement = document.getElementById('totalCost');
-        if (costElement) {
-            costElement.textContent = totalCost;
-        }
-    }
-
-    updateJoinButton() {
-        const joinButton = document.getElementById('joinNextGame');
-        joinButton.disabled = this.selectedCards.size === 0;
-    }
-
-    getSelectedCards() {
-        return this.availableCards.filter(card => this.selectedCards.has(card.id));
-    }
-
-    getTotalBet() {
-        return this.currentBet * this.selectedCards.size;
-    }
-
-    // Active game card navigation
-    navigateCards(direction) {
-        const activeCards = document.querySelectorAll('.active-card');
-        const currentIndex = Array.from(activeCards).findIndex(card => card.classList.contains('active'));
-        
-        if (currentIndex === -1) return;
-
-        // Hide current card
-        activeCards[currentIndex].classList.remove('active');
-        
-        // Calculate new index with wrap-around
-        let newIndex = currentIndex + direction;
-        if (newIndex < 0) newIndex = activeCards.length - 1;
-        if (newIndex >= activeCards.length) newIndex = 0;
-        
-        // Show new card
-        activeCards[newIndex].classList.add('active');
-        
-        // Update counter
-        document.getElementById('currentCardIndex').textContent = newIndex + 1;
-    }
-
-    renderActiveCards(selectedCards) {
-        const container = document.getElementById('activeCardsGrid');
-        container.innerHTML = '';
-
-        selectedCards.forEach((card, index) => {
-            const cardElement = this.createActiveCardElement(card, index === 0);
-            container.appendChild(cardElement);
-        });
-
-        document.getElementById('totalCards').textContent = selectedCards.length;
-        document.getElementById('currentCardIndex').textContent = '1';
-    }
-
-    createActiveCardElement(card, isActive) {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = `active-card ${isActive ? 'active' : ''}`;
-        cardDiv.dataset.cardId = card.id;
-
-        // Card header
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'card-header';
-        headerDiv.innerHTML = `<span class="card-number">Card #${card.number}</span>`;
-        
-        // Bingo grid
-        const gridDiv = document.createElement('div');
-        gridDiv.className = 'bingo-grid-mini active';
-
-        // BINGO header
-        const headerLetters = ['B', 'I', 'N', 'G', 'O'];
-        headerLetters.forEach(letter => {
-            const headerCell = document.createElement('div');
-            headerCell.className = 'bingo-letter-mini';
-            headerCell.textContent = letter;
-            gridDiv.appendChild(headerCell);
-        });
-
-        // Numbers grid
-        for (let row = 0; row < 5; row++) {
-            for (let col = 0; col < 5; col++) {
-                const cell = document.createElement('div');
-                cell.className = 'bingo-cell-mini active-game';
-                
-                if (row === 2 && col === 2) {
-                    cell.textContent = 'FREE';
-                    cell.classList.add('free');
-                } else {
-                    cell.textContent = card.cells[col][row];
-                    cell.dataset.number = card.cells[col][row];
-                }
-                
-                gridDiv.appendChild(cell);
-            }
-        }
-
-        cardDiv.appendChild(headerDiv);
-        cardDiv.appendChild(gridDiv);
-
-        return cardDiv;
-    }
-
-    markNumberOnActiveCards(number) {
-        document.querySelectorAll('.active-game[data-number]').forEach(cell => {
-            if (cell.dataset.number == number) {
-                cell.classList.add('marked');
-                
-                // Check for bingo on this card
-                if (this.checkCardBingo(cell.closest('.active-card'))) {
-                    this.onBingo(cell.closest('.active-card'));
-                }
-            }
-        });
-    }
-
-    checkCardBingo(cardElement) {
-        // Simplified bingo check - implement proper pattern checking
-        const markedCells = cardElement.querySelectorAll('.active-game.marked').length;
-        const freeCell = cardElement.querySelector('.active-game.free');
-        const totalMarked = markedCells + (freeCell ? 1 : 0);
-        
-        return totalMarked >= 5; // Simple check for demo
-    }
-
-    onBingo(cardElement) {
-        const cardNumber = cardElement.querySelector('.card-number').textContent;
-        
-        // Show win modal
-        document.getElementById('winningCardNumber').textContent = cardNumber.replace('Card #', '');
-        document.getElementById('bingoWinModal').classList.add('active');
-        
-        // Enable bingo button
-        document.getElementById('callBingo').disabled = false;
-        
-        // Haptic feedback
-        window.telegramApp.vibrate('success');
-    }
+/* Bingo Card */
+.bingo-card-container {
+    margin: var(--spacing-lg) 0;
 }
 
-// Initialize card pool manager
-window.cardPoolManager = new CardPoolManager();
+.bingo-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.card-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+.letter {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    padding: var(--spacing-sm);
+}
+
+.card-numbers {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-xs);
+}
+
+.number-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tg-theme-secondary-bg-color);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.number-cell.free {
+    background: var(--primary-color);
+    color: white;
+    cursor: default;
+}
+
+.number-cell.marked {
+    background: var(--success-color);
+    color: white;
+}
+
+.number-cell.marked::after {
+    content: '✓';
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.number-cell:not(.free):not(.marked):hover {
+    background: var(--warning-color);
+    transform: scale(1.05);
+}
+
+/* Numbers Pool */
+.numbers-pool {
+    margin: var(--spacing-lg) 0;
+}
+
+.numbers-pool h3 {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+    color: var(--secondary-color);
+}
+
+.numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: var(--spacing-xs);
+    max-height: 200px;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+    background: var(--tg-theme-secondary-bg-color);
+    border-radius: var(--border-radius);
+}
+
+.number-chip {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 600;
+    animation: pop-in 0.3s ease;
+}
+
+.number-chip.recent {
+    background: var(--success-color);
+    transform: scale(1.1);
+}
