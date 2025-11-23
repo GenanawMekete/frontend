@@ -1,112 +1,191 @@
-class CardPoolManager {
+class BingoMiniApp {
     constructor() {
-        this.availableCards = [];
-        this.selectedCards = new Set();
-        this.maxCards = 6;
-        this.currentBet = 10;
+        this.currentTab = 'quick-game';
+        this.userData = null;
         this.init();
     }
 
-    init() {
-        this.generateCardPool();
+    async init() {
+        await this.loadUserData();
         this.setupEventListeners();
-        this.updateDisplay();
+        this.updateUI();
+        this.hideLoading();
+        
+        console.log('Bingo Mini App initialized');
     }
 
-    generateCardPool() {
-        this.availableCards = Array.from({ length: 12 }, (_, index) => 
-            this.generateBingoCard(index + 1)
-        );
-    }
+    async loadUserData() {
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            const user = tg.initDataUnsafe?.user || {
+                id: Math.random().toString(36).substr(2, 9),
+                first_name: 'Player'
+            };
 
-    generateBingoCard(cardNumber) {
-        const card = {
-            id: `card_${cardNumber}`,
-            number: cardNumber,
-            price: 0,
-            cells: []
-        };
-
-        for (let col = 0; col < 5; col++) {
-            const columnNumbers = this.generateColumnNumbers(col);
-            card.cells.push(columnNumbers);
+            this.userData = {
+                id: user.id,
+                name: user.first_name || 'Player',
+                balance: 190,
+                gamesPlayed: 1920,
+                gamesWon: 14
+            };
+        } else {
+            // Fallback for development
+            this.userData = {
+                id: 'dev_user',
+                name: 'Developer',
+                balance: 190,
+                gamesPlayed: 1920,
+                gamesWon: 14
+            };
         }
-
-        return card;
-    }
-
-    generateColumnNumbers(columnIndex) {
-        const numbers = new Set();
-        const min = columnIndex * 15 + 1;
-        const max = min + 14;
-
-        while (numbers.size < 5) {
-            const num = Math.floor(Math.random() * (max - min + 1)) + min;
-            numbers.add(num);
-        }
-
-        return Array.from(numbers).sort((a, b) => a - b);
+        
+        this.updateUserUI();
     }
 
     setupEventListeners() {
-        // Card selection
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.bingo-card-selector')) {
-                const cardElement = e.target.closest('.bingo-card-selector');
-                const cardId = cardElement.dataset.cardId;
-                this.toggleCardSelection(cardId);
-            }
+        // Navigation
+        document.querySelectorAll('.nav-tab').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tab = e.currentTarget.dataset.tab;
+                this.switchTab(tab);
+            });
         });
 
-        document.getElementById('selectAllCards').addEventListener('click', () => {
-            this.selectAllCards();
+        // Bet selection
+        document.querySelectorAll('.bet-option').forEach(button => {
+            button.addEventListener('click', (e) => {
+                this.setBetAmount(parseInt(e.target.dataset.bet));
+            });
         });
 
-        document.getElementById('clearSelection').addEventListener('click', () => {
-            this.clearSelection();
+        // Game actions
+        document.getElementById('joinNextGame').addEventListener('click', () => {
+            this.joinNextGame();
+        });
+
+        document.getElementById('leaveGame').addEventListener('click', () => {
+            this.leaveGame();
+        });
+
+        document.getElementById('callBingo').addEventListener('click', () => {
+            this.callBingo();
+        });
+
+        // Modal actions
+        document.querySelectorAll('[data-action="play-again"]').forEach(button => {
+            button.addEventListener('click', () => {
+                this.playAgain();
+            });
+        });
+
+        document.querySelectorAll('[data-action="back-to-lobby"]').forEach(button => {
+            button.addEventListener('click', () => {
+                this.backToLobby();
+            });
         });
     }
 
-    toggleCardSelection(cardId) {
-        if (this.selectedCards.has(cardId)) {
-            this.selectedCards.delete(cardId);
-        } else {
-            if (this.selectedCards.size < this.maxCards) {
-                this.selectedCards.add(cardId);
-            } else {
-                alert(`Maximum ${this.maxCards} cards allowed per game`);
-                return;
-            }
+    switchTab(tab) {
+        this.currentTab = tab;
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.querySelectorAll('.nav-tab').forEach(button => {
+            button.classList.remove('active');
+        });
+
+        document.getElementById(`${tab}-tab`).classList.add('active');
+        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    }
+
+    setBetAmount(amount) {
+        document.querySelectorAll('.bet-option').forEach(button => {
+            button.classList.remove('active');
+        });
+        document.querySelector(`[data-bet="${amount}"]`).classList.add('active');
+        document.getElementById('currentBet').textContent = amount;
+    }
+
+    joinNextGame() {
+        const selectedCards = window.cardPoolManager.getSelectedCards();
+        if (selectedCards.length === 0) {
+            this.showAlert('Please select at least one card');
+            return;
         }
 
-        this.updateDisplay();
-        this.updateJoinButton();
+        this.showModal('activeGameModal');
+        window.gameTimer.startGame(selectedCards);
     }
 
-    selectAllCards() {
-        const cardsToSelect = this.availableCards.slice(0, this.maxCards);
-        this.selectedCards.clear();
-        cardsToSelect.forEach(card => {
-            this.selectedCards.add(card.id);
-        });
-        this.updateDisplay();
-        this.updateJoinButton();
+    leaveGame() {
+        this.closeModal('activeGameModal');
     }
 
-    clearSelection() {
-        this.selectedCards.clear();
-        this.updateDisplay();
-        this.updateJoinButton();
+    callBingo() {
+        this.showModal('bingoWinModal');
+        
+        // Update wallet with winnings
+        const betAmount = parseInt(document.getElementById('currentBet').textContent);
+        const cardCount = window.cardPoolManager.selectedCards.size;
+        const winnings = betAmount * cardCount * 10;
+        
+        this.userData.balance += winnings;
+        this.userData.gamesWon += 1;
+        this.updateUserUI();
+        
+        document.getElementById('winAmount').textContent = winnings;
     }
 
-    updateDisplay() {
-        this.renderCardPool();
-        this.updateSelectionCount();
+    playAgain() {
+        this.closeModal('bingoWinModal');
+        this.closeModal('activeGameModal');
+        this.joinNextGame();
     }
 
-    renderCardPool() {
-        const poolContainer = document.getElementById('cardPool');
-        poolContainer.innerHTML = '';
+    backToLobby() {
+        this.closeModal('bingoWinModal');
+        this.closeModal('activeGameModal');
+    }
+
+    updateUserUI() {
+        if (!this.userData) return;
+        
+        document.getElementById('walletAmount').textContent = this.userData.balance;
+        document.getElementById('totalGames').textContent = this.userData.gamesPlayed;
+        document.getElementById('gamesWon').textContent = this.userData.gamesWon;
+        
+        const winRate = this.userData.gamesPlayed > 0 
+            ? ((this.userData.gamesWon / this.userData.gamesPlayed) * 100).toFixed(1)
+            : 0;
+        document.getElementById('winRate').textContent = winRate + '%';
+    }
+
+    showModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+
+    closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    showAlert(message) {
+        alert(message); // In production, use Telegram's showAlert
+    }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+    window.bingoApp = new BingoMiniApp();
+});        poolContainer.innerHTML = '';
 
         this.availableCards.forEach(card => {
             const isSelected = this.selectedCards.has(card.id);
