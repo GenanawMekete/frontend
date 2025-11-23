@@ -1,39 +1,144 @@
-/* Telegram Mini App Theme Variables */
-:root {
-  --tg-theme-bg-color: #ffffff;
-  --tg-theme-text-color: #000000;
-  --tg-theme-hint-color: #999999;
-  --tg-theme-link-color: #2481cc;
-  --tg-theme-button-color: #2481cc;
-  --tg-theme-button-text-color: #ffffff;
-  --tg-theme-secondary-bg-color: #f1f1f1;
-  --tg-theme-header-bg-color: #ffffff;
-  --tg-theme-accent-text-color: #2481cc;
-  --tg-theme-section-bg-color: #ffffff;
-  --tg-theme-section-header-text-color: #2481cc;
-  --tg-theme-subtitle-text-color: #999999;
-  --tg-theme-destructive-text-color: #ff3b30;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Dark theme variables */
-[data-theme="dark"] {
-  --tg-theme-bg-color: #1c1c1d;
-  --tg-theme-text-color: #ffffff;
-  --tg-theme-hint-color: #98989e;
-  --tg-theme-link-color: #5ac8fa;
-  --tg-theme-button-color: #5ac8fa;
-  --tg-theme-button-text-color: #ffffff;
-  --tg-theme-secondary-bg-color: #2c2c2e;
-  --tg-theme-header-bg-color: #1c1c1d;
-  --tg-theme-accent-text-color: #5ac8fa;
-  --tg-theme-section-bg-color: #2c2c2e;
-  --tg-theme-section-header-text-color: #5ac8fa;
-  --tg-theme-subtitle-text-color: #98989e;
-  --tg-theme-destructive-text-color: #ff453a;
-}
-
-/* Apply Telegram theme to body */
 body {
-  background-color: var(--tg-theme-bg-color);
-  color: var(--tg-theme-text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #000000);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app-container {
+    min-height: 100vh;
+    background: var(--tg-theme-bg-color, #ffffff);
+}
+
+/* Header Styles */
+.tma-header {
+    background: var(--tg-theme-header-bg-color, #ffffff);
+    border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #f1f1f1);
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--tg-theme-text-color, #000000);
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--tg-theme-text-color, #000000);
+    transition: background-color 0.2s ease;
+}
+
+.icon-button:hover {
+    background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
+}
+
+/* Navigation */
+.tma-nav {
+    background: var(--tg-theme-header-bg-color, #ffffff);
+    border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #f1f1f1);
+    position: sticky;
+    top: 57px;
+    z-index: 99;
+}
+
+.nav-tabs {
+    display: flex;
+    padding: 0 16px;
+    overflow-x: auto;
+}
+
+.nav-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px 8px;
+    color: var(--tg-theme-hint-color, #999999);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.nav-tab.active {
+    color: var(--tg-theme-button-color, #2481cc);
+    border-bottom-color: var(--tg-theme-button-color, #2481cc);
+}
+
+/* Content Area */
+.tma-content {
+    padding: 16px;
+    min-height: calc(100vh - 120px);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--tg-theme-button-color, #2481cc);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--tg-theme-link-color, #2481cc);
 }
