@@ -1,17 +1,260 @@
-{
-  "url": "https://frontend.onrender.com",
-  "name": "Abush Bingo",
-  "iconUrl": "https://frontend.onrender.com/assets/icons/bingo.png",
-  "description": "Fast-paced multiplayer bingo game with 30-second rounds",
-  "shortName": "Bingo",
-  "version": "1.0.0",
-  "platform": "telegram",
-  "features": {
-    "multiplayer": true,
-    "payments": true,
-    "notifications": true
-  },
-  "permissions": [
-    "telegram_web_app"
-  ]
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Geez Bingo</title>
+    <meta name="telegram:viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="telegram:theme" content="dark">
+    <meta name="telegram:primary_button_color" content="#2481cc">
+    
+    <link rel="stylesheet" href="styles/telegram.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/card-pool.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+    <!-- Main App Container -->
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="tma-header">
+            <div class="header-content">
+                <h1 class="app-title">🎯 Geez Bingo</h1>
+                <div class="header-actions">
+                    <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+                        <span class="icon">🌙</span>
+                    </button>
+                    <button id="settingsBtn" class="icon-button" aria-label="Settings">
+                        <span class="icon">⚙️</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="tma-nav">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="quick-game">Quick Play</button>
+                <button class="nav-tab" data-tab="private">Private</button>
+                <button class="nav-tab" data-tab="profile">Profile</button>
+                <button class="nav-tab" data-tab="leaderboard">Leaderboard</button>
+            </div>
+        </nav>
+
+        <!-- Quick Game Content -->
+        <div id="quick-game-tab" class="tab-content active">
+            <div class="quick-game-container">
+                <!-- Game Timer -->
+                <div class="game-timer">
+                    <div class="timer-display">
+                        <span class="timer-label">Next Game Starts In</span>
+                        <span id="gameTimer" class="timer-value">00:30</span>
+                    </div>
+                    <div class="game-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span id="currentPlayers">240</span> Players
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">💰</span>
+                            Bet: <span id="currentBet">10</span> coins
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wallet Balance -->
+                <div class="wallet-section">
+                    <div class="wallet-balance">
+                        <span class="wallet-icon">💰</span>
+                        <span class="wallet-label">Wallet:</span>
+                        <span id="walletAmount" class="wallet-amount">190</span>
+                    </div>
+                    <button class="tma-button small" id="addCoins">Add Coins</button>
+                </div>
+
+                <!-- Card Pool Selection -->
+                <div class="card-pool-section">
+                    <div class="section-header">
+                        <h3>Select Your Bingo Cards</h3>
+                        <div class="card-counter">
+                            Selected: <span id="selectedCount">0</span>/<span id="maxCards">6</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-grid" id="cardPool">
+                        <!-- Cards will be dynamically generated -->
+                    </div>
+
+                    <div class="pool-actions">
+                        <button class="tma-button secondary" id="selectAllCards">Select All</button>
+                        <button class="tma-button secondary" id="clearSelection">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats-grid">
+                    <div class="stat-card quick">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalGames">1920</div>
+                            <div class="stat-label">Total Games</div>
+                        </div>
+                    </div>
+                    <div class="stat-card quick">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="gamesWon">14</div>
+                            <div class="stat-label">Games Won</div>
+                        </div>
+                    </div>
+                    <div class="stat-card quick">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="winRate">0.7%</div>
+                            <div class="stat-label">Win Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Actions -->
+                <div class="game-actions-quick">
+                    <button class="tma-button primary large" id="joinNextGame" disabled>
+                        Join Next Game (<span id="joinTimer">30</span>s)
+                    </button>
+                    <div class="bet-selection">
+                        <label>Bet Amount:</label>
+                        <div class="bet-options">
+                            <button class="bet-option active" data-bet="10">10</button>
+                            <button class="bet-option" data-bet="25">25</button>
+                            <button class="bet-option" data-bet="50">50</button>
+                            <button class="bet-option" data-bet="100">100</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other tabs would go here -->
+        <div id="private-tab" class="tab-content">
+            <!-- Private game content -->
+        </div>
+
+        <div id="profile-tab" class="tab-content">
+            <!-- Profile content -->
+        </div>
+
+        <div id="leaderboard-tab" class="tab-content">
+            <!-- Leaderboard content -->
+        </div>
+    </div>
+
+    <!-- Active Game Modal -->
+    <div id="activeGameModal" class="modal">
+        <div class="modal-content game-modal">
+            <div class="modal-header">
+                <h3>🎯 Game In Progress</h3>
+                <div class="game-timer-small">
+                    <span id="modalTimer">30</span>s
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Current Call Display -->
+                <div class="current-call-section">
+                    <div class="call-header">
+                        <h4>Current Call</h4>
+                        <span class="call-number">#<span id="callNumber">646</span></span>
+                    </div>
+                    <div class="current-number-display-large">
+                        <span class="number-letter" id="currentLetter">B</span>
+                        <span class="number-value" id="currentValue">8</span>
+                    </div>
+                    <div class="call-stats">
+                        <span>Called: <span id="calledCount">2</span>/75</span>
+                        <span>Players: <span id="activePlayers">240</span></span>
+                    </div>
+                </div>
+
+                <!-- Multiple Cards Display -->
+                <div class="multiple-cards-container">
+                    <div class="cards-view">
+                        <div class="cards-grid" id="activeCardsGrid">
+                            <!-- Active cards will be displayed here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Cards Navigation -->
+                    <div class="cards-navigation">
+                        <button class="nav-arrow" id="prevCard">◀</button>
+                        <span class="cards-counter">Card <span id="currentCardIndex">1</span>/<span id="totalCards">6</span></span>
+                        <button class="nav-arrow" id="nextCard">▶</button>
+                    </div>
+                </div>
+
+                <!-- Auto-Mark Toggle -->
+                <div class="auto-mark-section">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="autoMark" checked>
+                        <span class="toggle-slider"></span>
+                        Auto-Mark Numbers
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="tma-button danger" id="leaveGame">Leave Game</button>
+                <button class="tma-button success" id="callBingo" disabled>Call BINGO!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bingo Win Modal -->
+    <div id="bingoWinModal" class="modal">
+        <div class="modal-content win-modal">
+            <div class="win-header">
+                <span class="win-icon">🎉</span>
+                <h3>BINGO!</h3>
+            </div>
+            <div class="win-body">
+                <div class="win-details">
+                    <p>Congratulations! You won the game!</p>
+                    <div class="win-card-info">
+                        Winning Card: #<span id="winningCardNumber">145</span>
+                    </div>
+                    <div class="winning-pattern">
+                        Pattern: <span id="winningPattern">Single Line</span>
+                    </div>
+                </div>
+                <div class="win-rewards">
+                    <div class="reward-item large">
+                        <span class="reward-icon">💰</span>
+                        <span class="reward-amount">+<span id="winAmount">100</span> coins</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="tma-button primary" data-action="play-again">Play Again</button>
+                <button class="tma-button secondary" data-action="back-to-lobby">Back to Lobby</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Connecting...</p>
+    </div>
+
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="scripts/telegram.js"></script>
+    <script src="scripts/game.js"></script>
+    <script src="scripts/card-pool.js"></script>
+    <script src="scripts/timer.js"></script>
+    <script src="scripts/socket-client.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+                          </html>
