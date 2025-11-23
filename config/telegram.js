@@ -1,6 +1,6 @@
 const TelegramConfig = {
-    appId: process.env.TELEGRAM_APP_ID || 'YOUR_APP_ID',
-    botUsername: process.env.TELEGRAM_BOT_USERNAME || 'your_bot_username',
+    appId: process.env.TELEGRAM_APP_ID || '36228998',
+    botUsername: process.env.TELEGRAM_BOT_USERNAME || 'abushbingoo_bot',
     
     // Feature flags
     features: {
