@@ -3,110 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎯 Geez Bingo</title>
-    <meta name="telegram:viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="telegram:theme" content="dark">
-    <meta name="telegram:primary_button_color" content="#2481cc">
-    
-    <link rel="stylesheet" href="styles/telegram.css">
+    <title>🎯 Abush Bingo</title>
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/components.css">
-    <link rel="stylesheet" href="styles/card-pool.css">
-    <link rel="stylesheet" href="styles/animations.css">
-    <link rel="stylesheet" href="styles/responsive.css">
 </head>
 <body>
-    <!-- Main App Container -->
-    <div id="app" class="app-container">
-        <!-- Header -->
-        <header class="tma-header">
-            <div class="header-content">
-                <h1 class="app-title">🎯 Geez Bingo</h1>
-                <div class="header-actions">
-                    <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
-                        <span class="icon">🌙</span>
-                    </button>
-                    <button id="settingsBtn" class="icon-button" aria-label="Settings">
-                        <span class="icon">⚙️</span>
-                    </button>
-                </div>
-            </div>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>🎯 Abush Bingo</h1>
+            <p>Fast-paced multiplayer bingo game</p>
         </header>
-
-        <!-- Main Navigation -->
-        <nav class="tma-nav">
-            <div class="nav-tabs">
-                <button class="nav-tab active" data-tab="quick-game">Quick Play</button>
-                <button class="nav-tab" data-tab="private">Private</button>
-                <button class="nav-tab" data-tab="profile">Profile</button>
-                <button class="nav-tab" data-tab="leaderboard">Leaderboard</button>
+        <main class="app-main">
+            <div class="welcome-card">
+                <h2>Welcome to Bingo!</h2>
+                <p>Game setup successful. Ready for development.</p>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-value">30s</span>
+                        <span class="stat-label">Game Intervals</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">6</span>
+                        <span class="stat-label">Max Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">1000</span>
+                        <span class="stat-label">Max Players</span>
+                    </div>
+                </div>
             </div>
-        </nav>
-
-        <!-- Quick Game Content -->
-        <div id="quick-game-tab" class="tab-content active">
-            <div class="quick-game-container">
-                <!-- Game Timer -->
-                <div class="game-timer">
-                    <div class="timer-display">
-                        <span class="timer-label">Next Game Starts In</span>
-                        <span id="gameTimer" class="timer-value">00:30</span>
-                    </div>
-                    <div class="game-info">
-                        <div class="info-item">
-                            <span class="info-icon">👥</span>
-                            <span id="currentPlayers">240</span> Players
-                        </div>
-                        <div class="info-item">
-                            <span class="info-icon">💰</span>
-                            Bet: <span id="currentBet">10</span> coins
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Wallet Balance -->
-                <div class="wallet-section">
-                    <div class="wallet-balance">
-                        <span class="wallet-icon">💰</span>
-                        <span class="wallet-label">Wallet:</span>
-                        <span id="walletAmount" class="wallet-amount">190</span>
-                    </div>
-                    <button class="tma-button small" id="addCoins">Add Coins</button>
-                </div>
-
-                <!-- Card Pool Selection -->
-                <div class="card-pool-section">
-                    <div class="section-header">
-                        <h3>Select Your Bingo Cards</h3>
-                        <div class="card-counter">
-                            Selected: <span id="selectedCount">0</span>/<span id="maxCards">6</span>
-                        </div>
-                    </div>
-                    
-                    <div class="card-grid" id="cardPool">
-                        <!-- Cards will be dynamically generated -->
-                    </div>
-
-                    <div class="pool-actions">
-                        <button class="tma-button secondary" id="selectAllCards">Select All</button>
-                        <button class="tma-button secondary" id="clearSelection">Clear</button>
-                    </div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="quick-stats-grid">
-                    <div class="stat-card quick">
-                        <div class="stat-icon">🎯</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="totalGames">1920</div>
-                            <div class="stat-label">Total Games</div>
-                        </div>
-                    </div>
-                    <div class="stat-card quick">
-                        <div class="stat-icon">🏆</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="gamesWon">14</div>
-                            <div class="stat-label">Games Won</div>
+        </main>
+    </div>
+    <script src="scripts/app.js"></script>
+</body>
+</html>                            <div class="stat-label">Games Won</div>
                         </div>
                     </div>
                     <div class="stat-card quick">
