@@ -1,0 +1,79 @@
+/* Mobile First Approach */
+@media (max-width: 480px) {
+    .game-info {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .stats-cards {
+        flex-direction: column;
+    }
+    
+    .numbers-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    
+    .bingo-card {
+        padding: var(--spacing-sm);
+    }
+    
+    .letter {
+        font-size: 1rem;
+        padding: var(--spacing-xs);
+    }
+    
+    .number-cell {
+        font-size: 0.875rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 480px;
+        margin: 0 auto;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .lobby-content {
+        padding: var(--spacing-xl) 0;
+    }
+}
+
+@media (max-height: 700px) {
+    .lobby-content,
+    .results-content {
+        padding: var(--spacing-lg) 0;
+        gap: var(--spacing-lg);
+    }
+    
+    .bingo-card-container {
+        margin: var(--spacing-md) 0;
+    }
+    
+    .numbers-pool {
+        margin: var(--spacing-md) 0;
+    }
+}
+
+/* Orientation specific */
+@media (orientation: landscape) and (max-height: 500px) {
+    .game-header,
+    .game-footer {
+        padding: var(--spacing-sm);
+    }
+    
+    .screen {
+        padding: var(--spacing-sm);
+    }
+    
+    .bingo-card {
+        transform: scale(0.9);
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .bingo-card {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+}
