@@ -1,13 +1,19 @@
 {
-    "url": "https://frontend-c3q6.onrender.com",
-    "name": "Bingo Royale",
-    "iconUrl": "https://frontend-c3q6.onrender.com/assets/icons/bingo.svg",
-    "description": "Multiplayer Bingo Game with 30-second rounds",
-    "short_name": "Bingo Royale",
-    "display": "fullscreen",
-    "orientation": "portrait",
-    "theme_color": "#0088cc",
-    "background_color": "#ffffff",
-    "scope": "/frontend/",
-    "start_url": "/frontend/index.html"
+  "url": "https://frontend-one-gray-26.vercel.app",
+  "name": "Telegram Bingo",
+  "iconUrl": "https://frontend-one-gray-26.vercel.app/assets/icons/bingo.svg",
+  "description": "Play exciting Bingo games with friends on Telegram",
+  "short_name": "Bingo",
+  "version": "1.0.0",
+  "platform": "web",
+  "theme_color": "#4F46E5",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icons/bingo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
 }
