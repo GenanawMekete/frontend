@@ -1,0 +1,11 @@
+{
+  "name": "bingo-telegram-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Building for production...'",
+    "dev": "echo 'Development mode'"
+  },
+  "devDependencies": {
+    "@vercel/static-build": "^1.0.0"
+  }
+}
