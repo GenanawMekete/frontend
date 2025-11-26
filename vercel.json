@@ -8,7 +8,10 @@
     }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
@@ -20,7 +23,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors https://telegram.org https://web.telegram.org"
+          "value": "frame-ancestors https://telegram.org https://web.telegram.org https://*.telegram.org https://*.web.telegram.org"
         }
       ]
     }
